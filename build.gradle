@@ -50,6 +50,20 @@ plugins {
   id 'com.diffplug.spotless' version '6.14.0' apply false // 6.14.1 and newer require Java 11 at compile time, so we can't upgrade until AK 4.0
 }
 
+tasks.withType(Test) {
+  if(System.getProperty("HARNESS_JAVA_AGENT")) {
+    jvmArgs += [System.getProperty("HARNESS_JAVA_AGENT")]
+  }
+}
+
+gradle.projectsEvaluated {
+        tasks.withType(Test) {
+            filter {
+                setFailOnNoMatchingTests(false)
+            }
+        }
+}
+
 ext {
   gradleVersion = versions.gradle
   minJavaVersion = 8
