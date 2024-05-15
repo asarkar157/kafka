@@ -467,6 +467,13 @@ subprojects {
     maxHeapSize = defaultMaxHeapSize
     jvmArgs = defaultJvmArgs
 
+
+    // Configure test task to generate XML reports
+    reports {
+        junitXml.enabled = true
+        junitXml.destination = file("${buildDir}/test-results/test")
+    }
+
     testLogging {
       events = userTestLoggingEvents ?: testLoggingEvents
       showStandardStreams = userShowStandardStreams ?: testShowStandardStreams
