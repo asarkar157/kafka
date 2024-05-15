@@ -11,7 +11,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License..
+// limitations under the License.
 
 import org.ajoberstar.grgit.Grgit
 import org.gradle.api.JavaVersion
@@ -31,7 +31,8 @@ buildscript {
 }
 
 plugins {
-  id 'com.github.ben-manes.versions' version '0.48.0'
+  // id 'com.diffplug.spotless' version '6.10.0' //removing because this is added in line 51 below
+  id 'com.github.ben-manes.versions' version '0.42.0'
   id 'idea'
   id 'jacoco'
   id 'java-library'
@@ -56,7 +57,7 @@ ext {
   buildVersionFileName = "kafka-version.properties"
 
   defaultMaxHeapSize = "2g"
-  defaultJvmArgs = ["-Xss4m", "-XX:+UseParallelGC"]
+  defaultJvmArgs = ["-Xss16m", "-XX:+UseParallelGC"]
 
   // "JEP 403: Strongly Encapsulate JDK Internals" causes some tests to fail when they try
   // to access internals (often via mocking libraries). We use `--add-opens` as a workaround
@@ -124,6 +125,14 @@ ext {
 }
 
 allprojects {
+
+  // This makes sure that any test tasks for subprojects don't
+  // fail in case the test filter does not match.
+  tasks.withType(Test) {
+    filter {
+      setFailOnNoMatchingTests(false)
+    }
+  }
 
   repositories {
     mavenCentral()
@@ -528,6 +537,14 @@ subprojects {
 
     maxHeapSize = defaultMaxHeapSize
     jvmArgs = defaultJvmArgs
+
+    // This adds HARNESS_JAVA_AGENT to the testing command if it's
+    // provided through the command line.
+    // Local builds will still remain same as it only adds if the
+    // parameter is provided.
+    if(System.getProperty("HARNESS_JAVA_AGENT")) {
+      jvmArgs += [System.getProperty("HARNESS_JAVA_AGENT")]
+    }
 
     testLogging {
       events = userTestLoggingEvents ?: testLoggingEvents
