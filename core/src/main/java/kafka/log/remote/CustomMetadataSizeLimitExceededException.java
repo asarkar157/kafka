@@ -16,5 +16,6 @@
  */
 package kafka.log.remote;
 
+
 class CustomMetadataSizeLimitExceededException extends Exception {
 }
