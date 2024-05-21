@@ -56,8 +56,8 @@ ext {
   minJavaVersion = 8
   buildVersionFileName = "kafka-version.properties"
 
-  defaultMaxHeapSize = "2g"
-  defaultJvmArgs = ["-Xss16m", "-XX:+UseParallelGC"]
+  defaultMaxHeapSize = "4g"
+  defaultJvmArgs = ["-Xss64m", "-XX:+UseParallelGC"]
 
   // "JEP 403: Strongly Encapsulate JDK Internals" causes some tests to fail when they try
   // to access internals (often via mocking libraries). We use `--add-opens` as a workaround
